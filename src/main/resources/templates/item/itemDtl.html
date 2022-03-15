@@ -20,7 +20,7 @@
             });
         });
 
-        function calculateToalPrice(){ //현재 주문할 수량과 상품 한 개당 가격을 곱해서 결제 금액을 구해주는 함수
+        function calculateToalPrice(){
             var count = $("#count").val();
             var price = $("#price").val();
             var totalPrice = price*count;
@@ -29,86 +29,83 @@
 
         function order(){
             var token = $("meta[name='_csrf']").attr("content");
-            //스프링 시큐리티를 사용할 경우 기본적으로 Post 방식의 데이터 전송에는 csrf 토큰 값이 필요하므로 해당 값들을 조회합니다.
             var header = $("meta[name='_csrf_header']").attr("content");
 
             var url = "/order";
-            var paramData = { //주문할 상품의 아이디와 주문 수량 데이터를 전달할 객체를 생성합니다.
+            var paramData = {
                 itemId : $("#itemId").val(),
                 count : $("#count").val()
             };
 
-            var param = JSON.stringify(paramData); //서버에 보낼 주문 데이터를 json으로 변경합니다.
+            var param = JSON.stringify(paramData);
 
             $.ajax({
                 url      : url,
                 type     : "POST",
-                contentType : "application/json", //서버에 데이터를 보낼 형식으로 json으로 지정합니다.
+                contentType : "application/json",
                 data     : param,
                 beforeSend : function(xhr){
                     /* 데이터를 전송하기 전에 헤더에 csrf값을 설정 */
                     xhr.setRequestHeader(header, token);
                 },
-                dataType : "json", //서버에서 결과값으로 받을 데이터의 타입을 json으로 설정하겠습니다.
+                dataType : "json",
                 cache   : false,
                 success  : function(result, status){
-                    // 주문 로직 호출이 성공하면 "주문이 오나료되었습니다."라는 메시지를 보여주고 메인 페이지로 이동합니다.
                     alert("주문이 완료 되었습니다.");
                     location.href='/';
                 },
                 error : function(jqXHR, status, error){
-                    //성공메세지
 
-                    if(jqXHR.status == '401'){ //로그인 상태가 아니면 로그인 후 이용해주세요라는 메세지
+                    if(jqXHR.status == '401'){
                         alert('로그인 후 이용해주세요');
                         location.href='/members/login';
                     } else{
-                        alert(jqXHR.responseText);//주문 시 에럭 발생하면 해당 메시지를 보여줍니다.
+                        alert(jqXHR.responseText);
                     }
 
                 }
             });
         }
-        //
-        // function addCart(){
-        //     var token = $("meta[name='_csrf']").attr("content");
-        //     var header = $("meta[name='_csrf_header']").attr("content");
-        //
-        //     var url = "/cart";
-        //     var paramData = {
-        //         itemId : $("#itemId").val(),
-        //         count : $("#count").val()
-        //     };
-        //
-        //     var param = JSON.stringify(paramData);
-        //
-        //     $.ajax({
-        //         url      : url,
-        //         type     : "POST",
-        //         contentType : "application/json",
-        //         data     : param,
-        //         beforeSend : function(xhr){
-        //             /* 데이터를 전송하기 전에 헤더에 csrf값을 설정 */
-        //             xhr.setRequestHeader(header, token);
-        //         },
-        //         dataType : "json",
-        //         cache   : false,
-        //         success  : function(result, status){
-        //             alert("상품을 장바구니에 담았습니다.");
-        //             location.href='/';
-        //         },
-        //         error : function(jqXHR, status, error){
-        //
-        //             if(jqXHR.status == '401'){
-        //                 alert('로그인 후 이용해주세요');
-        //                 location.href='/members/login';
-        //             } else{
-        //                 alert(jqXHR.responseText);
-        //             }
-        //
-        //         }
-        //     });
-        // }
+
+        function addCart(){
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            var url = "/cart";
+            var paramData = {
+                itemId : $("#itemId").val(),
+                count : $("#count").val()
+            };
+
+            var param = JSON.stringify(paramData);
+
+            $.ajax({
+                url      : url,
+                type     : "POST",
+                contentType : "application/json",
+                data     : param,
+                beforeSend : function(xhr){
+                    /* 데이터를 전송하기 전에 헤더에 csrf값을 설정 */
+                    xhr.setRequestHeader(header, token);
+                },
+                dataType : "json",
+                cache   : false,
+                success  : function(result, status){
+                    alert("상품을 장바구니에 담았습니다.");
+                    location.href='/';
+                },
+                error : function(jqXHR, status, error){
+
+                    if(jqXHR.status == '401'){
+                        alert('로그인 후 이용해주세요');
+                        location.href='/members/login';
+                    } else{
+                        alert(jqXHR.responseText);
+                    }
+
+                }
+            });
+        }
 
     </script>
 </th:block>
@@ -196,7 +193,6 @@
     </div>
 
     <div th:each="itemImg : ${item.itemImgDtoList}" class="text-center">
-<!--        등록된 상품 이미지를 반복 구문을 통해 보여주고 있습니다. 보통 실제 쇼핑몰에서는 상품에 대한 정보를 예쁘게 이미지로 만듬-->
         <img th:if="${not #strings.isEmpty(itemImg.imgUrl)}" th:src="${itemImg.imgUrl}" class="rounded mgb-15" width="800">
     </div>
 

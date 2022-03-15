@@ -35,25 +35,20 @@
 <div layout:fragment="content">
 
     <div id="carouselControls" class="carousel slide margin" data-ride="carousel">
-<!--        부트스트랩의 슬라이드를 보여주는 carousel 컴포넌트를 이용하여 배너를 만들었습니다.현재  행사중인 상품을 광하는데 사용-->
         <div class="carousel-inner">
             <div class="carousel-item active item">
                 <img class="d-block w-100 banner" src="https://user-images.githubusercontent.com/13268420/112147492-1ab76200-8c20-11eb-8649-3d2f282c3c02.png" alt="First slide">
-<!--            이미지 경로를 넝훚면 해당 이미지를 보여줍니다.-->
             </div>
         </div>
     </div>
 
     <input type="hidden" name="searchQuery" th:value="${itemSearchDto.searchQuery}">
-<!--    쇼핑몰 오른쪽 상단의 서치기능을 이용해서 상품을 검색할때 페이징 처리시 해당 검색어를 유지하기 위해서 히든 값으로 검색어를 유지합니다-->
     <div th:if="${not #strings.isEmpty(itemSearchDto.searchQuery)}" class="center">
         <p class="h3 font-weight-bold" th:text="${itemSearchDto.searchQuery} + '검색 결과'"></p>
-<!--        상품을 검색했을때 어떤 검색어로 조회된 결과인지를 보여줍니다.-->
     </div>
 
     <div class="row">
         <th:block th:each="item, status: ${items.getContent()}">
-<!--            조회한 메인 상품 데이터를 보여줍니다. 부트스트랩의 card 컴포넌트를 이용했고, 사용자가 카드 형태로 상품의 내역을 볼수있다-->
             <div class="col-md-4 margin">
                 <div class="card">
                     <a th:href="'/item/' +${item.id}" class="text-dark">

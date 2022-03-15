@@ -55,19 +55,31 @@ public class OrderController {
         return new ResponseEntity<Long>(orderId, HttpStatus.OK);
     }
 
-//    @GetMapping(value = {"/orders", "/orders/{page}"})
-//    public String orderHist(@PathVariable("page") Optional<Integer> page, Principal principal, Model model){
-//
-//        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 4);
-//        //한번에 가지고 올 주문의 개수는 4개로 설정하겠습니다.
-//        Page<OrderHistDto> ordersHistDtoList = orderService.getOrderList(principal.getName(), pageable);
-//        //현재 로그인한 회원은 이메잉ㄹ과 페이징 객체를 파라미터로 전달하여 화면에 전달한 주문 목록 데이터를 리턴값으로 받는다
-//
-//        model.addAttribute("orders", ordersHistDtoList);
-//        model.addAttribute("page", pageable.getPageNumber());
-//        model.addAttribute("maxPage", 5);
-//
-//        return "order/orderHist";
-//    }
+    @GetMapping(value = {"/orders", "/orders/{page}"})
+    public String orderHist(@PathVariable("page") Optional<Integer> page, Principal principal, Model model){
+
+        Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 4);
+        //한번에 가지고 올 주문의 개수는 4개로 설정하겠습니다.
+        Page<OrderHistDto> ordersHistDtoList = orderService.getOrderList(principal.getName(), pageable);
+        //현재 로그인한 회원은 이메잉ㄹ과 페이징 객체를 파라미터로 전달하여 화면에 전달한 주문 목록 데이터를 리턴값으로 받는다
+
+        model.addAttribute("orders", ordersHistDtoList);
+        model.addAttribute("page", pageable.getPageNumber());
+        model.addAttribute("maxPage", 5);
+
+        return "order/orderHist";
+    }
+
+    @PostMapping("/order/{orderId}/cancel")
+    public  @ResponseBody ResponseEntity canaelOrder
+            (@PathVariable("orderId") Long orderId, Principal principal){
+
+        if(!orderService.validateOrder(orderId, principal.getName())){
+            return new ResponseEntity<String>("주문 취소 권한이 없습니다.", HttpStatus.FORBIDDEN);
+        }
+
+        orderService.cancelOrder(orderId);
+        return new ResponseEntity<Long>(orderId, HttpStatus.OK);
+    }
 
 }

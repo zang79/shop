@@ -68,4 +68,8 @@ public class Item extends BaseEntity {
         } //재고 부족 예외 발생
         this.stockNumber = restStock; //남은 재고 값으로 할당합니다.
     }
+
+    public void addStock(int stockNumber){
+        this.stockNumber += stockNumber;
+    }
 }
